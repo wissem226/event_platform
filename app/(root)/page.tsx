@@ -5,13 +5,23 @@ import Link from "next/link";
 import { Images } from "lucide-react";
 import Collection from "@/components/ui/shared/Collection";
 import { getAllEvents } from "@/lib/actions/event.action";
+import Search from "@/components/ui/shared/Search";
+import { SearchParamProps } from "@/types";
+import CategoryFilter from "@/components/ui/shared/CategoryFilter";
 
 
-export default async  function Home() {
+export default async  function Home({searchParams}:SearchParamProps){
+ const resolvedParams = await searchParams
+ const page =Number(resolvedParams?.page) || 1
+ const searchText = (resolvedParams?.query as string) || ''
+ const category = (resolvedParams?.category as string) || ''
+
+
+
  const events = await getAllEvents({
-  query: '',
-  category: '',
-  page: 1,
+  query: searchText,
+  category,
+  page,
   limit: 6
 
 
@@ -48,8 +58,8 @@ export default async  function Home() {
   md:gap-12">
       <h2 className="h2-bold"> Trust by <br/> Thousands of Events</h2>
      <div className="flex w-full flex-col gap-5 md:flex-row">
-      Search 
-      CategoryFilter
+      <Search />
+      <CategoryFilter />
       
      </div>
      <Collection
@@ -58,8 +68,8 @@ export default async  function Home() {
      epmtyStateSubtext="Come back later "
      collectiontype="All_Events"
      limit={6} 
-     page={1}
-     totalPages={2}
+     page={page}
+     totalPages={events?.totalPages }
 
 
 
